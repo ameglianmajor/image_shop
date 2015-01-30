@@ -1,3 +1,5 @@
+require 'file-fetcher/file-fetcher'
+
 class ImagesController < ApplicationController
   before_action :set_image, only: [:show, :edit, :update, :destroy]
 
@@ -59,6 +61,12 @@ class ImagesController < ApplicationController
       format.html { redirect_to images_url, notice: 'Image was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def process_image
+    debugger
+    fetcher = ::FileFetcher::Base.new
+    fetcher.get_image(url)
   end
 
   private

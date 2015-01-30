@@ -1,1 +1,1 @@
-require 'lib/file-fetcher'
+require 'file-fetcher/lib/file-fetcher'
