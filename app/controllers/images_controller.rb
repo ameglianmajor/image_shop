@@ -89,9 +89,9 @@ class ImagesController < ApplicationController
     def resize_image(input_blob, new_width, new_height, name)
       width = new_width.to_i
       height = new_height.to_i
-      File.open(name, 'wb') { |fp| fp.write(input_blob) }
-      original_image = ::Magick::Image.read(name)[0]
-      processed_image = original_image.resize(width, height)
+      processed_image = ::Magick::ImageList.new
+      processed_image.from_blob(input_blob)
+      processed_image.resize!(width, height)
       processed_image_blob = processed_image.to_blob
       processed_image_blob
     end
