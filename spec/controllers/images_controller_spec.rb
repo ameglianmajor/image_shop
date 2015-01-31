@@ -157,8 +157,12 @@ RSpec.describe ImagesController, :type => :controller do
   end
 
   describe "GET process_image" do
-    it "obtaines the requested image" do
-      
+    it "obtains the requested image" do
+      get :process_image,
+          url: 'https%3A%2F%2Fwww.honest.com%2Fassets%2Fv2%2Flogos%2Fheader_logo-fdc405e4b582ddf3b8a9679eab644a76.png',
+          width: '400',
+          height: '500',
+          activity: 'resize'
     end
   end
 
