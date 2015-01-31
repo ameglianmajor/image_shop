@@ -66,35 +66,25 @@ class ImagesController < ApplicationController
   def process_image
     activity = input_parameters[:activity]
     url = input_parameters[:url]
-    name = url.split('/').last
-    retrieved_image = retrieve_image(url)
-    image_content_type = retrieved_image[:content_type]
-    processed_image =
-      resize_image(
-        retrieved_image[:image],
-        input_parameters[:width],
-        input_parameters[:height],
-        name)
-    send_data processed_image, type: image_content_type, disposition: 'inline'
+    image = Image.find_by url: url
+    unless image
+      image ||= Image.new
+      name = url.split('/').last
+      image.url = url
+      image.name = name
+      image_content_type = image.retrieve_image
+      image.save!
+    end
+    image_content_type ||= ""
+    processed_image = image.resize_image(
+      input_parameters[:width],
+      input_parameters[:height])
+    send_data processed_image,
+              type: image_content_type,
+              disposition: 'inline'
   end
 
   private
-
-    def retrieve_image(url)
-      fetcher = ::FileFetcher::Base.new
-      response = fetcher.get_image(url)
-      {image: response.body, content_type: response.env[:response_headers]['content-type'] }
-    end
-
-    def resize_image(input_blob, new_width, new_height, name)
-      width = new_width.to_i
-      height = new_height.to_i
-      processed_image = ::Magick::ImageList.new
-      processed_image.from_blob(input_blob)
-      processed_image.resize!(width, height)
-      processed_image_blob = processed_image.to_blob
-      processed_image_blob
-    end
 
     def input_parameters
       @input_parameters ||= params.permit(:url, :width, :height, :activity)
