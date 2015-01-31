@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe "images/edit", :type => :view do
   before(:each) do
     @image = assign(:image, Image.create!(
-      :title => "MyString"
+      name: "MyString",
+      url: "http://www.example.com",
+      image_blob: ""
     ))
   end
 

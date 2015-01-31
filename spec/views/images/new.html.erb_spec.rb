@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe "images/new", :type => :view do
   before(:each) do
     assign(:image, Image.new(
-      :title => "MyString"
+      name: "image_one.jpg",
+      url: "http://www.example.com/image_one.jpg",
+      image_blob: ""
     ))
   end
 
@@ -12,7 +14,7 @@ RSpec.describe "images/new", :type => :view do
 
     assert_select "form[action=?][method=?]", images_path, "post" do
 
-      assert_select "input#image_title[name=?]", "image[title]"
+      assert_select "input#image_name[name=?]", "image[name]"
     end
   end
 end
