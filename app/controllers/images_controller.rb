@@ -72,15 +72,14 @@ class ImagesController < ApplicationController
       name = url.split('/').last
       image.url = url
       image.name = name
-      image_content_type = image.retrieve_image
+      image.retrieve_image
       image.save!
     end
-    image_content_type ||= ""
     processed_image = image.resize_image(
       input_parameters[:width],
       input_parameters[:height])
     send_data processed_image,
-              type: image_content_type,
+              type: image.content_type,
               disposition: 'inline'
   end
 

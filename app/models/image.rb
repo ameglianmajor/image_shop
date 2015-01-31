@@ -3,7 +3,7 @@ class Image < ActiveRecord::Base
     fetcher = ::FileFetcher::Base.new
     response = fetcher.get_image(url)
     self.image_blob = Base64.encode64(response.body)
-    response.env[:response_headers]['content-type']
+    self.content_type = response.env[:response_headers]['content-type']
   end
 
   def resize_image(new_width, new_height)
