@@ -158,8 +158,13 @@ RSpec.describe ImagesController, :type => :controller do
 
   describe "GET process_image" do
     it "obtains the requested image" do
+
+#stub_request(:get, "http://www.aboutlawsuits.com/wp-content/uploads/baby-bottle-220.jpg").
+  #with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.9.1'}).
+  #to_return(:status => 200, :body => "", :headers => {})
+
       get :process_image,
-          url: 'https%3A%2F%2Fwww.honest.com%2Fassets%2Fv2%2Flogos%2Fheader_logo-fdc405e4b582ddf3b8a9679eab644a76.png',
+          url: 'http%3A%2F%2Fwww.aboutlawsuits.com%2Fwp-content%2Fuploads%2Fbaby-bottle-220.jpg',
           width: '400',
           height: '500',
           activity: 'resize'
