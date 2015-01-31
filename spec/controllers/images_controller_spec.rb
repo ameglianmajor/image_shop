@@ -156,4 +156,10 @@ RSpec.describe ImagesController, :type => :controller do
     end
   end
 
+  describe "GET process_image" do
+    it "obtaines the requested image" do
+      
+    end
+  end
+
 end
