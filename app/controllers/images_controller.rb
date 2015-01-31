@@ -64,7 +64,6 @@ class ImagesController < ApplicationController
   end
 
   def process_image
-    debugger
     activity = input_parameters[:activity]
     url = input_parameters[:url]
     name = url.split('/').last
@@ -79,23 +78,23 @@ class ImagesController < ApplicationController
     send_data processed_image, type: image_content_type, disposition: 'inline'
   end
 
-  def retrieve_image(url)
-    fetcher = ::FileFetcher::Base.new
-    response = fetcher.get_image(url)
-    {image: response.body, content_type: response.env[:response_headers]['content-type'] }
-  end
-
-  def resize_image(input_blob, new_width, new_height, name)
-    width = new_width.to_i
-    height = new_height.to_i
-    File.open(name, 'wb') { |fp| fp.write(input_blob) }
-    original_image = ::Magick::Image.read(name)[0]
-    processed_image = original_image.resize(width, height)
-    processed_image_blob = processed_image.to_blob
-    processed_image_blob
-  end
-
   private
+
+    def retrieve_image(url)
+      fetcher = ::FileFetcher::Base.new
+      response = fetcher.get_image(url)
+      {image: response.body, content_type: response.env[:response_headers]['content-type'] }
+    end
+
+    def resize_image(input_blob, new_width, new_height, name)
+      width = new_width.to_i
+      height = new_height.to_i
+      File.open(name, 'wb') { |fp| fp.write(input_blob) }
+      original_image = ::Magick::Image.read(name)[0]
+      processed_image = original_image.resize(width, height)
+      processed_image_blob = processed_image.to_blob
+      processed_image_blob
+    end
 
     def input_parameters
       @input_parameters ||= params.permit(:url, :width, :height, :activity)
