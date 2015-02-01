@@ -5,7 +5,8 @@ RSpec.describe "images/show", :type => :view do
     @image = assign(:image, Image.create!(
       name: "image_one.jpg",
       url: "http://www.example.com/image_one.jpg",
-      image_blob: ""
+      image_blob: "a",
+      retrieval_time: Time.now.to_i
     ))
   end
 

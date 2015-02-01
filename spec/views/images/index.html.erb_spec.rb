@@ -6,12 +6,14 @@ RSpec.describe "images/index", :type => :view do
       Image.create!(
         name: "Image Name",
         url: "http://www.example.com/image_one.jpg",
-        image_blob: ""
+        image_blob: "a",
+        retrieval_time: Time.now.to_i
       ),
       Image.create!(
         name: "Image Name",
         url: "http://www.example.com/image_two.jpg",
-        image_blob: ""
+        image_blob: "a",
+        retrieval_time: Time.now.to_i
       )
     ])
   end
