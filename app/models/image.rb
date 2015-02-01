@@ -1,14 +1,22 @@
 class Image < ActiveRecord::Base
   validates_presence_of :url, :image_blob, :retrieval_time
 
+  # Retrieval time is an integer, which measures time since
+  # the beginning of the Epoch, which is
+  # 0:00 on January 1st, 1970
+
   def self.retrieve url
     image = find_by(url: url)
     unless image
       image = Image.new
       image.url = url
       image.name = name_from_url(url)
+      # Since the image has not been retrieved, it
+      # is being set to -1, which is before the Epoch has begun.
+      image.retrieval_time = -1
+    end
+    if image.retrieval_time < 5.minutes.ago.to_i
       image.retrieve_image
-      image.retrieval_time = Time.now.to_i
       image.save!
     end
     image
@@ -39,6 +47,7 @@ class Image < ActiveRecord::Base
   def retrieve_image
     fetcher = ::FileFetcher::Base.new
     response = fetcher.get_image(url)
+    self.retrieval_time = Time.now.to_i
     self.image_blob = Base64.encode64(response.body)
     self.content_type = response.env[:response_headers]['content-type']
   end
