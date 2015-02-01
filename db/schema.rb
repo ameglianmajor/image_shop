@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150131232153) do
+ActiveRecord::Schema.define(version: 20150201102131) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20150131232153) do
     t.string   "url"
     t.text     "image_blob"
     t.string   "content_type"
+    t.integer  "retrieval_time"
   end
 
   add_index "images", ["url"], name: "index_images_on_url", unique: true, using: :btree
