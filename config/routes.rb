@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   resources :images do
     collection do
-      get 'process_image'
+      put 'resize_image'
+      put 'crop_image'
     end
   end
 

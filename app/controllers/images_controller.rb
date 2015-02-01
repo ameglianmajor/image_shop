@@ -63,31 +63,47 @@ class ImagesController < ApplicationController
     end
   end
 
-  def process_image
-    activity = input_parameters[:activity]
-    url = input_parameters[:url]
-    image = Image.find_by url: url
-    unless image
-      image ||= Image.new
-      name = url.split('/').last
-      image.url = url
-      image.name = name
-      image.retrieve_image
-      image.save!
-    end
-    processed_image = image.resize_image(
-      input_parameters[:width],
-      input_parameters[:height])
-    send_data processed_image,
-              type: image.content_type,
-              disposition: 'inline'
+  def crop_image
+    image = Image.retrieve crop_parameters[:url]
+    cropped_image = image.crop_image(
+      crop_parameters[:upper_left_corner],
+      crop_parameters[:width],
+      crop_parameters[:height]
+    )
+    send_data cropped_image,
+      type: image.content_type,
+      disposition: 'inline'
+  end
+
+  def resize_image
+    image = Image.retrieve resize_parameters[:url]
+    resized_image = image.resize_image(
+      resize_parameters[:width],
+      resize_parameters[:height]
+    )
+    send_data resized_image,
+      type: image.content_type,
+      disposition: 'inline'
   end
 
   private
 
-    def input_parameters
-      @input_parameters ||= params.permit(:url, :width, :height, :activity)
-    end
+  def resize_parameters
+    @resize_parameters ||= params.permit(
+      :url,
+      :width,
+      :height
+    )
+  end
+
+  def crop_parameters
+    @crop_parameters ||= params.permit(
+      :url,
+      :width,
+      :height,
+      :upper_left_corner => [:x, :y]
+    )
+  end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_image
