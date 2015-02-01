@@ -1,5 +1,8 @@
 require 'file-fetcher/file-fetcher'
 
+# This controller handles the processing of images. It is a standard resourceful
+# controller, which also has endpoints to handle file operations such as
+# resizing and cropping images.
 class ImagesController < ApplicationController
   before_action :set_image, only: [:show, :edit, :update, :destroy]
 
@@ -58,7 +61,10 @@ class ImagesController < ApplicationController
   def destroy
     @image.destroy
     respond_to do |format|
-      format.html { redirect_to images_url, notice: 'Image was successfully destroyed.' }
+      format.html do
+        redirect_to images_url,
+        notice: 'Image was successfully destroyed.'
+      end
       format.json { head :no_content }
     end
   end
@@ -70,9 +76,7 @@ class ImagesController < ApplicationController
       crop_parameters[:width],
       crop_parameters[:height]
     )
-    send_data cropped_image,
-      type: image.content_type,
-      disposition: 'inline'
+    send_data(cropped_image, type: image.content_type, disposition: 'inline')
   end
 
   def resize_image
@@ -81,36 +85,37 @@ class ImagesController < ApplicationController
       resize_parameters[:width],
       resize_parameters[:height]
     )
-    send_data resized_image,
-      type: image.content_type,
-      disposition: 'inline'
+    send_data(resized_image, type: image.content_type, disposition: 'inline')
   end
 
-  private
+    # Private methods are indented an additional two spaces to easily
+    # distinguish between public and private methods.
+    private
 
-  def resize_parameters
-    @resize_parameters ||= params.permit(
-      :url,
-      :width,
-      :height
-    )
-  end
+    def resize_parameters
+      @resize_parameters ||= params.permit(
+        :url,
+        :width,
+        :height
+      )
+    end
 
-  def crop_parameters
-    @crop_parameters ||= params.permit(
-      :url,
-      :width,
-      :height,
-      :upper_left_corner => [:x, :y]
-    )
-  end
+    def crop_parameters
+      @crop_parameters ||= params.permit(
+        :url,
+        :width,
+        :height,
+        upper_left_corner: [:x, :y]
+      )
+    end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_image
       @image = Image.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Never trust parameters from the scary internet,
+    # only allow the white list through.
     def image_params
       params.require(:image).permit(:title)
     end
