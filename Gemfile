@@ -26,7 +26,6 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'rmagick'
-gem 'simplecov'
 
 group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -34,13 +33,14 @@ group :development do
 end
 
 group :development, :test do
-  gem 'cucumber-rails', require: false
-  gem 'database_cleaner'
   gem 'byebug'
   gem 'rspec-rails', '~> 3.0'
 end
 
 group :test do
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner'
+  gem 'simplecov'
   gem 'webmock'
   gem 'vcr'
 end
