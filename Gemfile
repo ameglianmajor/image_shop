@@ -43,6 +43,7 @@ group :test do
   gem 'simplecov', require: false
   gem 'webmock'
   gem 'vcr'
+  gem 'rspec-activemodel-mocks'
 end
 
 # Use ActiveModel has_secure_password
