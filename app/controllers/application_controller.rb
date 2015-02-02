@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
       yield
     rescue Apipie::ParamMissing => e
       respond_to do |format|
-        debugger
         handle_response(e, format, :missing)
       end
     rescue Apipie::ParamInvalid => e

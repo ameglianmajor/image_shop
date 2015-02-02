@@ -58,6 +58,7 @@ class Image < ActiveRecord::Base
   def retrieve_image
     fetcher = ::FileFetcher::Base.new
     response = fetcher.get_image(url)
+    raise Apipie::ParamInvalid.new(:url, "#{url}", 'The url is invalid') if response.status == 301
     self.retrieval_time = Time.now.to_i
     self.image_blob = Base64.encode64(response.body)
     self.content_type = response.env[:response_headers]['content-type']
