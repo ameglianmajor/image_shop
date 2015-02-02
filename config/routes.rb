@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  apipie
   resources :images do
     collection do
       # The image is being fetched and saved to a database if
