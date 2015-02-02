@@ -42,7 +42,6 @@ group :test do
   gem 'database_cleaner'
   gem 'simplecov', require: false
   gem 'webmock'
-  gem 'vcr'
   gem 'rspec-activemodel-mocks'
 end
 

@@ -18,10 +18,6 @@ require 'simplecov'
 SimpleCov.start
 require 'webmock/rspec'
 
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
-Dir[("{config.root}/spec/support/**/*.rb")].each { |f| require f }
-
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
