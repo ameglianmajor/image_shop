@@ -160,9 +160,12 @@ RSpec.describe ImagesController, :type => :controller do
   describe "PUT process_image calls" do
 
     let(:image) { mock_model(Image).as_null_object }
+    let(:test_image_url) { 'http://www.clipartbest.com/cliparts/KTj/49G/KTj49GATq.jpeg' }
+    let(:uri_encoded_url) { URI::encode(test_image_url) }
 
     before do
       Image.stub(:retrieve).and_return(image)
+      image.stub(:resize_image).and_return('a resized string image blob')
     end
 
     it "obtains the resized image" do
@@ -196,6 +199,7 @@ RSpec.describe ImagesController, :type => :controller do
       new_width = '150'
       new_height = '150'
 
+      image.stub(:crop_image).and_return('a cropped string image blob')
       Image.should_receive(:retrieve).
         with(test_image_url).
         and_return(image)
