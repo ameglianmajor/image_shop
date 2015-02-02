@@ -69,6 +69,22 @@ class ImagesController < ApplicationController
     end
   end
 
+  api :GET, 'images/crop_image', "Request a cropped image."
+  description <<-EOS
+    This endpoint is used to crop an image whose url is provided. This call requires
+    a url, a new width, a new height, and the coordinates of a point in the original
+    image. The point that is provided will act as the upper-left
+    corner of the cropped image. Upon successful completion, a cropped image
+    with the requested properties will be sent back to the user.
+  EOS
+  param :url, String, desc: 'A url for the image to be cropped. This url should be sent in url-encoded format.', required: true
+  param :upper_left_corner, Hash, required:true do
+    param :x, String, desc: 'x coordinate of the upper-left corner of the cropped image.'
+    param :y, String, desc: 'y coordinate of the upper-left corner of the cropped image.'
+  end
+  param :width, String, desc: 'The width of the new cropped image.', required: true
+  param :height, String, desc: 'The height of the new cropped image.', required: true
+  error 400, 'Bad Request. Please check that all parameters were provided and that the request is syntactically correct.'
   def crop_image
     image = Image.retrieve crop_parameters[:url]
     cropped_image = image.crop_image(
@@ -82,6 +98,16 @@ class ImagesController < ApplicationController
     expires_in 1.minutes, public: true
   end
 
+  api :GET, 'images/resize_image', 'Request a resized image.'
+  description <<-EOS
+    This endpoint is used to resize an image whose url is provided. This call requires
+    a url, a new width, and a new height. Upon successful completion, a resized image
+    with the requested properties will be sent back to the user.
+  EOS
+  param :url, String, desc: 'A url for the image to be resized. This url should be sent in url-encoded format.', required: true
+  param :width, String, desc: 'The width of the new resized image.', required: true
+  param :height, String, desc: 'The height of the new resized image.', required: true
+  error 400, 'Bad Request. Please check that all parameters were provided and that the request is syntactically correct.'
   def resize_image
     image = Image.retrieve resize_parameters[:url]
     resized_image = image.resize_image(
