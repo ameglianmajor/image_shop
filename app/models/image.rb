@@ -24,6 +24,8 @@ class Image < ActiveRecord::Base
   def self.retrieve(url)
     image = find_by(url: url)
     image ||= Image.new(url: url)
+    # The database cache is set to 5 minutes. This should
+    # be an order of magnitude greater than the CDN caching time.
     if image.retrieval_time < 5.minutes.ago.to_i
       image.retrieve_image
       image.save!

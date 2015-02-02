@@ -77,6 +77,9 @@ class ImagesController < ApplicationController
       crop_parameters[:height]
     )
     send_data(cropped_image, type: image.content_type, disposition: 'inline')
+    # See comments in resize_image. The same comments about Cache-Control Header
+    # caching and database caching apply here as well.
+    expires_in 1.minutes, public: true
   end
 
   def resize_image
@@ -86,6 +89,17 @@ class ImagesController < ApplicationController
       resize_parameters[:height]
     )
     send_data(resized_image, type: image.content_type, disposition: 'inline')
+    # The global cache was set to public with an expiration time of 1 minute.
+    # This is done through the Cache-Control Header. The timespan chosen
+    # is to facillitate testing. In practice, we would likely use a slightly
+    # longer value. However, this value should be an order of magnitude smaller
+    # than the database caching time. The database caching time is set to 5
+    # minutes to facillitate testing. In practice, the refetch time for the
+    # database would also be longer and an order of magnitude longer than the
+    # CDN caching time. This is to minimize CDN usage and cost. Since CDN caching
+    # is based on url and parameter values. Furthermore, CDN storage is more
+    # expensive than database storage.
+    expires_in 1.minutes, public: true
   end
 
     # Private methods are indented an additional two spaces to easily
