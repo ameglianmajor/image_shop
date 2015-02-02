@@ -36,6 +36,7 @@ To run just the Cucumber tests, run the following command in the root directory.
 To view the test coverage report, run the following command after running the rspec tests.
 - firefox coverage/index.html
 - open coverage/index.html (on MacOSX)
+
 There are two reasons the test coverage is not 100%.
 * I didn't ensure 100% test coverage for methods created through rails generators. Some of that code is extraneous.
 * I didn't finish writing specs for all the error handling code. As a result, the application_controller does not have 100% coverage.
