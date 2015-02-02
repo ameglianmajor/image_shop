@@ -1,8 +1,21 @@
 Rails.application.routes.draw do
   resources :images do
     collection do
-      put 'resize_image'
-      put 'crop_image'
+      # The image is being fetched and saved to a database if
+      # it has not been retrieved in the last 5 minutes.
+      # Thus, this request should be a PUT according to some
+      # REST API design principles since the action causes a
+      # state change at the database level and the action is
+      # idempotent. Idempotency is one reason not to use a PUT.
+      # Using a PUT verb causes two problems. First, It can't be
+      # easily accessed in a browser through a url if it is a put.
+      # Second, csrf protection is turned on by default for all
+      # PUT and POST requests. Thus, we would have to disable for
+      # these actions or obtain a CSRF token. For simplicity, a
+      # get was used. Based on other design principles, a get can
+      # also be justified here.
+      get 'resize_image'
+      get 'crop_image'
     end
   end
 

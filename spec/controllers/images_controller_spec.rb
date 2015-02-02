@@ -185,7 +185,7 @@ RSpec.describe ImagesController, :type => :controller do
         with(new_width, new_height).
         and_return(image_blob_string)
 
-      put :resize_image,
+      get :resize_image,
           url: uri_encoded_url,
           width: new_width,
           height: new_height
@@ -210,7 +210,7 @@ RSpec.describe ImagesController, :type => :controller do
         with(upper_left_corner, new_width, new_height).
         and_return(image_blob_string)
 
-      put :crop_image,
+      get :crop_image,
         url: uri_encoded_url,
         upper_left_corner: upper_left_corner,
         width: new_width,
