@@ -175,13 +175,15 @@ RSpec.describe ImagesController, :type => :controller do
       uri_encoded_url = URI::encode(test_image_url)
       new_width = '400'
       new_height = '500'
+      image_blob_string = 'a resized string image blob'
 
+      image.stub(:resize_image).and_return(image_blob_string)
       Image.should_receive(:retrieve).
         with(test_image_url).
         and_return(image)
       image.should_receive(:resize_image).
         with(new_width, new_height).
-        and_return('a resized string image blob')
+        and_return(image_blob_string)
 
       put :resize_image,
           url: uri_encoded_url,
@@ -198,14 +200,15 @@ RSpec.describe ImagesController, :type => :controller do
       upper_left_corner = {x: '50', y: '50'}
       new_width = '150'
       new_height = '150'
+      image_blob_string = 'a cropped string image blob'
 
-      image.stub(:crop_image).and_return('a cropped string image blob')
+      image.stub(:crop_image).and_return(image_blob_string)
       Image.should_receive(:retrieve).
         with(test_image_url).
         and_return(image)
       image.should_receive(:crop_image).
         with(upper_left_corner, new_width, new_height).
-        and_return('a cropped string image blob')
+        and_return(image_blob_string)
 
       put :crop_image,
         url: uri_encoded_url,
