@@ -157,7 +157,7 @@ RSpec.describe ImagesController, :type => :controller do
     end
   end
 
-  describe "PUT process_image calls" do
+  describe "GET process_image calls" do
 
     let(:image) { mock_model(Image).as_null_object }
     let(:test_image_url) { 'http://www.clipartbest.com/cliparts/KTj/49G/KTj49GATq.jpeg' }
