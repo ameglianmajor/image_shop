@@ -16,7 +16,7 @@ Image Resizing: Use the url below to test image resizing.
 http://localhost:3000/images/resize_image?url=http%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2FKTj%2F49G%2FKTj49GATq.jpeg&width=300&height=200
 
 Image Cropping: Use the url below to test image croping.
-http://localhost:3000/images/crop_image?url=http%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2FKTj%2F49G%2FKTj49GATq.jpeg&width=200&height=400&upper_left_corner%5Bx%5D=40&upper_left_corner%5By%5D=50
+http://localhost:3000/images/crop_image?url=http%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2FKTj%2F49G%2FKTj49GATq.jpeg&width=100&height=200&upper_left_corner%5Bx%5D=40&upper_left_corner%5By%5D=50
 
 ### Apipie Documentation
 To view the Apipie documentation, visit the following url.

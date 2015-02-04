@@ -89,7 +89,7 @@ class Image < ActiveRecord::Base
       image_height
     )
       constraint_satisfied =
-        (cropped_width + x_coordinate < image_width) && (cropped_height + y_coordinate < image_height)
+        (cropped_width + x_coordinate <= image_width) && (cropped_height + y_coordinate <= image_height)
       raise ::ImageShop::CropConstraintError unless constraint_satisfied
     end
 
