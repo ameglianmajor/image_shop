@@ -1,9 +1,11 @@
 require 'file-fetcher/file-fetcher'
+require 'image_shop/regexp'
 
 # This controller handles the processing of images. It is a standard resourceful
 # controller, which also has endpoints to handle file operations such as
 # resizing and cropping images.
 class ImagesController < ApplicationController
+  #extend ImageShop::Regexp
   before_action :set_image, only: [:show, :edit, :update, :destroy]
 
   # GET /images
@@ -77,13 +79,13 @@ class ImagesController < ApplicationController
     corner of the cropped image. Upon successful completion, a cropped image
     with the requested properties will be sent back to the user.
   EOS
-  param :url, String, desc: 'A url for the image to be cropped. This url should be sent in url-encoded format.', required: true
-  param :upper_left_corner, Hash, required:true do
-    param :x, String, desc: 'x coordinate of the upper-left corner of the cropped image.'
-    param :y, String, desc: 'y coordinate of the upper-left corner of the cropped image.'
+  param :url, ImageShop::Regexp.uri, desc: 'A url for the image to be cropped. This url should be sent in url-encoded format.', required: true
+  param :upper_left_corner, Hash, required: true do
+    param :x, ImageShop::Regexp.positive_integer, desc: 'x coordinate of the upper-left corner of the cropped image.', required: true
+    param :y, ImageShop::Regexp.positive_integer, desc: 'y coordinate of the upper-left corner of the cropped image.', required: true
   end
-  param :width, String, desc: 'The width of the new cropped image.', required: true
-  param :height, String, desc: 'The height of the new cropped image.', required: true
+  param :width, ImageShop::Regexp.positive_integer, desc: 'The width of the new cropped image.', required: true
+  param :height, ImageShop::Regexp.positive_integer, desc: 'The height of the new cropped image.', required: true
   error 400, 'Bad Request. Please check that all parameters were provided and that the request is syntactically correct.'
   def crop_image
     image = Image.retrieve crop_parameters[:url]
@@ -95,7 +97,7 @@ class ImagesController < ApplicationController
     send_data(cropped_image, type: image.content_type, disposition: 'inline')
     # See comments in resize_image. The same comments about Cache-Control Header
     # caching and database caching apply here as well.
-    expires_in 1.minutes, public: true
+    expires_in cache_expiration_time, public: true
   end
 
   api :GET, 'images/resize_image', 'Request a resized image.'
@@ -104,9 +106,9 @@ class ImagesController < ApplicationController
     a url, a new width, and a new height. Upon successful completion, a resized image
     with the requested properties will be sent back to the user.
   EOS
-  param :url, String, desc: 'A url for the image to be resized. This url should be sent in url-encoded format.', required: true
-  param :width, String, desc: 'The width of the new resized image.', required: true
-  param :height, String, desc: 'The height of the new resized image.', required: true
+  param :url, ImageShop::Regexp.uri, desc: 'A url for the image to be resized. This url should be sent in url-encoded format.', required: true
+  param :width, ImageShop::Regexp.positive_integer, desc: 'The width of the new resized image.', required: true
+  param :height, ImageShop::Regexp.positive_integer, desc: 'The height of the new resized image.', required: true
   error 400, 'Bad Request. Please check that all parameters were provided and that the request is syntactically correct.'
   def resize_image
     image = Image.retrieve resize_parameters[:url]
@@ -125,7 +127,7 @@ class ImagesController < ApplicationController
     # CDN caching time. This is to minimize CDN usage and cost. Since CDN caching
     # is based on url and parameter values. Furthermore, CDN storage is more
     # expensive than database storage.
-    expires_in 1.minutes, public: true
+    expires_in cache_expiration_time, public: true
   end
 
     # Private methods are indented an additional two spaces to easily
@@ -158,5 +160,9 @@ class ImagesController < ApplicationController
     # only allow the white list through.
     def image_params
       params.require(:image).permit(:title)
+    end
+
+    def cache_expiration_time
+      @cache_expiration_time ||= Rails.application.config.cache_control_expiration_time
     end
 end
