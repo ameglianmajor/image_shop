@@ -75,4 +75,11 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Image Retrieval Parameters - all times are in seconds
+  config.database_image_storage_time = 300
+  config.cache_control_expiration_time = 60
+  # - all lengths are in pixels
+  config.maximum_resize_width = 10000
+  config.maximum_resize_height = 10000
 end
