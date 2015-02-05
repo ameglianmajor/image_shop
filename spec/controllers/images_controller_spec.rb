@@ -159,64 +159,88 @@ RSpec.describe ImagesController, :type => :controller do
 
   describe "GET process_image calls" do
 
-    let(:image) { mock_model(Image).as_null_object }
-    let(:test_image_url) { 'http://www.clipartbest.com/cliparts/KTj/49G/KTj49GATq.jpeg' }
-    let(:uri_encoded_url) { URI::encode(test_image_url) }
+    context "valid data present" do
+      let(:image) { mock_model(Image).as_null_object }
+      let(:test_image_url) { 'http://www.clipartbest.com/cliparts/KTj/49G/KTj49GATq.jpeg' }
+      let(:uri_encoded_url) { URI::encode(test_image_url) }
 
-    before do
-      Image.stub(:retrieve).and_return(image)
-      image.stub(:resize_image).and_return('a resized string image blob')
-    end
+      before do
+        Image.stub(:retrieve).and_return(image)
+        image.stub(:resize_image).and_return('a resized string image blob')
+      end
 
-    it "obtains the resized image" do
-      image.stub(:resize_image).and_return('a resized string image blob')
+      it "obtains the resized image" do
+        new_width = '400'
+        new_height = '500'
+        image_blob_string = 'a resized string image blob'
 
-      test_image_url = 'http://www.clipartbest.com/cliparts/KTj/49G/KTj49GATq.jpeg'
-      uri_encoded_url = URI::encode(test_image_url)
-      new_width = '400'
-      new_height = '500'
-      image_blob_string = 'a resized string image blob'
+        image.stub(:resize_image).and_return(image_blob_string)
+        Image.should_receive(:retrieve).
+          with(test_image_url).
+          and_return(image)
+        image.should_receive(:resize_image).
+          with(new_width, new_height).
+          and_return(image_blob_string)
 
-      image.stub(:resize_image).and_return(image_blob_string)
-      Image.should_receive(:retrieve).
-        with(test_image_url).
-        and_return(image)
-      image.should_receive(:resize_image).
-        with(new_width, new_height).
-        and_return(image_blob_string)
+        get :resize_image,
+            url: uri_encoded_url,
+            width: new_width,
+            height: new_height
+        expect(response).to have_http_status(:ok)
+      end
 
-      get :resize_image,
+      it "obtains the cropped image" do
+        upper_left_corner = {x: '50', y: '50'}
+        new_width = '150'
+        new_height = '150'
+        image_blob_string = 'a cropped string image blob'
+
+        image.stub(:crop_image).and_return(image_blob_string)
+        Image.should_receive(:retrieve).
+          with(test_image_url).
+          and_return(image)
+        image.should_receive(:crop_image).
+          with(upper_left_corner, new_width, new_height).
+          and_return(image_blob_string)
+
+        get :crop_image,
           url: uri_encoded_url,
+          upper_left_corner: upper_left_corner,
           width: new_width,
           height: new_height
-      expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "obtains the cropped image" do
-      image.stub(:crop_image).and_return('a cropped string image blob')
+    context "invalid data present" do
+      context "with good url and bad parameters" do
+        let(:test_image_url) { 'http://www.clipartbest.com/cliparts/KTj/49G/KTj49GATq.jpeg' }
+        let(:uri_encoded_url) { URI::encode(test_image_url) }
 
-      test_image_url = 'http://www.clipartbest.com/cliparts/KTj/49G/KTj49GATq.jpeg'
-      uri_encoded_url = URI::encode(test_image_url)
-      upper_left_corner = {x: '50', y: '50'}
-      new_width = '150'
-      new_height = '150'
-      image_blob_string = 'a cropped string image blob'
+        it "states width is invalid when not an integer" do
+          new_width = '400a'
+          new_height = '500'
 
-      image.stub(:crop_image).and_return(image_blob_string)
-      Image.should_receive(:retrieve).
-        with(test_image_url).
-        and_return(image)
-      image.should_receive(:crop_image).
-        with(upper_left_corner, new_width, new_height).
-        and_return(image_blob_string)
+          get :resize_image,
+            url: uri_encoded_url,
+            width: new_width,
+            height: new_height
+          expect(response).to have_http_status(:bad_request)
+        end
 
-      get :crop_image,
-        url: uri_encoded_url,
-        upper_left_corner: upper_left_corner,
-        width: new_width,
-        height: new_height
-      expect(response).to have_http_status(:ok)
+        it "states height is invalid when negative" do
+          new_width = '400'
+          new_height = '-500'
+
+          get :resize_image,
+            url: uri_encoded_url,
+            width: new_width,
+            height: new_height
+          expect(response).to have_http_status(:bad_request)
+        end
+      end
     end
+
   end
 
 end
